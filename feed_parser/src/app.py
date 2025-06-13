@@ -29,7 +29,6 @@ def main():
                     last_modified=parsed['headers']['last-modified'],
                     etag=parsed['etag']
                 )
-
                 for entry in parsed.entries:
                     published_at_struct = entry.get('published_parsed')
                     if published_at_struct:
@@ -38,12 +37,17 @@ def main():
                         )
                     else:
                         published_at = None
+                    content = None
+                    if 'content' in entry and isinstance(entry['content'], list) and entry['content']:
+                        content = entry['content'][0].get('value')
+                    if not content:
+                        content = entry.get('summary')
                     db.insert_article(
                         feed_id=feed['id'],
                         title=entry.get('title'),
                         link=entry.get('link'),
                         published_at=published_at,
-                        content=entry.get('summary') or entry.get('content', [{}])[0].get('value')
+                        content=content
                     )
 
 if __name__ == '__main__':
