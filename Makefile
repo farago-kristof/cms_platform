@@ -22,3 +22,8 @@ check: format lint type-check test
 
 test-cov:
 	PYTHONPATH=$(SRC_DIR) $(PYTEST) --cov=$(SRC_DIR) --cov-report=term-missing $(UNIT_TESTS_DIR)
+
+rm-pg-volume:
+	@echo "Removing db volume"
+	docker compose down postgres
+	docker volume rm cms-platform_pg_data
