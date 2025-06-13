@@ -1,0 +1,20 @@
+---
+name: cms-platform
+
+services:
+  redis:
+    image: redis:7-alpine
+    networks:
+      - queue
+
+  feed-parser:
+    build:
+      context: feed_parser
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+    command: ["-c", "tail -f /dev/null"]
+
+networks:
+  queue:
+    driver: bridge
