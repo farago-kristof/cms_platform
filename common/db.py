@@ -26,7 +26,9 @@ class CMSDataBase(LoggerMixin):
                 SELECT * FROM feeds.rss_feed
                 ORDER BY last_polled NULLS FIRST
             """)
-            return cur.fetchall()
+            results = cur.fetchall()
+            self.logger.debug("Fetched %d feeds", len(results))
+            return results
 
     def update_feed_metadata(self, feed_id, etag, last_modified):
         self.logger.debug("Updating feed metadata, feed_id=%s, etag=%s, last_modified=%s", feed_id, etag, last_modified)
@@ -38,4 +40,16 @@ class CMSDataBase(LoggerMixin):
                     last_modified = %s
                 WHERE id = %s
             """, (etag, last_modified, feed_id))
+        self.conn.commit()
+
+    def insert_article(self, feed_id, title, link, published_at=None, content=None):
+        self.logger.debug(
+            "Inserting article: feed_id=%s, title=%s, link=%s", feed_id, title, link
+        )
+        with self.conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO feeds.articles (feed_id, title, link, published_at, content)
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (link) DO NOTHING
+            """, (feed_id, title, link, published_at, content))
         self.conn.commit()

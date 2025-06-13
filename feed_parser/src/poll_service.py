@@ -24,7 +24,7 @@ class PollService(LoggerMixin):
 
         if parsed.status == 304:
             self.logger.info('No new entries (304 Not Modified).')
-            return
+            return None
 
         self.logger.info(f"Found {len(parsed.entries)} new entries.")
         for entry in parsed.entries:

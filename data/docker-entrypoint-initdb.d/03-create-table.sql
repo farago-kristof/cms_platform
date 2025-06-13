@@ -23,3 +23,13 @@ CREATE TRIGGER trg_update_updated_at
 BEFORE UPDATE ON feeds.rss_feed
 FOR EACH ROW
 EXECUTE FUNCTION feeds.update_updated_at_column();
+
+CREATE TABLE IF NOT EXISTS feeds.articles (
+    id SERIAL PRIMARY KEY,
+    feed_id INTEGER NOT NULL REFERENCES feeds.rss_feed(id) ON DELETE CASCADE,
+    title VARCHAR(256) NOT NULL,
+    link VARCHAR(512) NOT NULL UNIQUE,
+    published_at TIMESTAMP WITH TIME ZONE,
+    content TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
