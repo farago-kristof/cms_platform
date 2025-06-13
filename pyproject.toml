@@ -1,0 +1,16 @@
+[tool.black]
+line-length = 120
+target-version = ['py312']
+include = 'src/'
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+src = ["src"]
+select = ["E", "F", "B", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
