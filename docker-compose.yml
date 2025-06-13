@@ -9,8 +9,10 @@ services:
 
   feed-parser:
     build:
-      context: feed_parser
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: feed_parser/Dockerfile
+    env_file:
+      - .env
     depends_on:
       - redis
       - postgres
@@ -24,11 +26,11 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: feeds
+      POSTGRES_DB: cms
     env_file:
-      data/.env
+      .env
     volumes:
-      - /data/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./data/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - pg_data:/var/lib/postgresql/data
     networks:
       - db

@@ -25,5 +25,5 @@ test-cov:
 
 rm-pg-volume:
 	@echo "Removing db volume"
-	docker compose down postgres
+	docker compose down
 	docker volume rm cms-platform_pg_data

@@ -20,6 +20,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_update_updated_at
-BEFORE UPDATE ON feeds.rss_feeds
+BEFORE UPDATE ON feeds.rss_feed
 FOR EACH ROW
 EXECUTE FUNCTION feeds.update_updated_at_column();

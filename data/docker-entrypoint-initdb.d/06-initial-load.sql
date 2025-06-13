@@ -1,4 +1,4 @@
-INSERT INTO feeds.rss_feeds (
+INSERT INTO feeds.rss_feed (
     url,
     title,
     description,
