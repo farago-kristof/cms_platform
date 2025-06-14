@@ -22,3 +22,8 @@ def classify_article(article_id):
             response = model.generate_content(prompt)
             raw_text = response.candidates[0].content.parts[0].text
             response_dict = loads(raw_text)
+            db.insert_article_classification(
+                article_id=article_id,
+                is_genai_related=response_dict.get('is_genai_related', False),
+                innovation_count=response_dict.get('innovation_count', 0)
+            )

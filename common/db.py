@@ -75,6 +75,30 @@ class CMSDataBase(LoggerMixin):
             article = cur.fetchone()
             return article
 
+    def insert_article_classification(self, article_id: int, is_genai_related: bool, innovation_count: int):
+        """
+        Insert or update the GenAI classification for a given article.
+
+        :param article_id: int, the primary key of the article
+        :param is_genai_related: bool, whether the article is related to GenAI
+        :param innovation_count: int, number of GenAI innovations found
+        :return: None
+        """
+        self.logger.debug(
+            "Inserting/updating article classification: article_id=%s, is_genai_related=%s, innovation_count=%d",
+            article_id, is_genai_related, innovation_count
+        )
+        with self.conn.cursor() as cur:
+            cur.execute("""
+                        INSERT INTO feeds.article_classification (article_id, is_genai_related, innovation_count)
+                        VALUES (%s, %s, %s) ON CONFLICT (article_id) DO
+                        UPDATE
+                            SET is_genai_related = EXCLUDED.is_genai_related,
+                            innovation_count = EXCLUDED.innovation_count,
+                            classified_at = now();
+                        """, (article_id, is_genai_related, innovation_count))
+        self.conn.commit()
+
 
 def enqueue_article(config: dict, article_id: int, queue_name: str = 'default'):
     """

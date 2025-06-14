@@ -33,3 +33,12 @@ CREATE TABLE IF NOT EXISTS feeds.articles (
     content TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS feeds.article_classification (
+    id SERIAL PRIMARY KEY,
+    article_id INTEGER NOT NULL REFERENCES feeds.articles(id) ON DELETE CASCADE,
+    is_genai_related BOOLEAN NOT NULL,
+    innovation_count INTEGER NOT NULL DEFAULT 0,
+    classified_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT article_classification_unique UNIQUE(article_id)
+);
