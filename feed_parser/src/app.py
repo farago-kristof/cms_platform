@@ -4,6 +4,7 @@ from datetime import datetime
 
 from poll_service import PollService
 from common.db import CMSDataBase
+from common.ustils import get_first_existing_value
 
 POSTGRES_CONNECTION = {
     'host': 'postgres',
@@ -23,10 +24,12 @@ def main():
         parsed = poll_service.poll(feed)
 
         if parsed is not None:
+            headers = parsed.headers
+            last_modified = get_first_existing_value(d=headers, keys=('last_modified', 'last-modified'))
             with CMSDataBase(config=POSTGRES_CONNECTION) as db:
                 db.update_feed_metadata(
                     feed_id=feed['id'],
-                    last_modified=parsed['headers']['last-modified'],
+                    last_modified=last_modified,
                     etag=parsed['etag']
                 )
                 for entry in parsed.entries:
