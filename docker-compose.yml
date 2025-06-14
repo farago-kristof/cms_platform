@@ -23,6 +23,18 @@ services:
     env_file:
       - .env
 
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - db
+      - web
+
   feed-parser:
     build:
       context: .
@@ -59,6 +71,8 @@ networks:
   queue:
     driver: bridge
   db:
+    driver: bridge
+  web:
     driver: bridge
 
 volumes:

@@ -99,6 +99,23 @@ class CMSDataBase(LoggerMixin):
                         """, (article_id, is_genai_related, innovation_count))
         self.conn.commit()
 
+    def get_genai_related_articles(self):
+        """
+        Retrieve all articles classified as GenAI related along with their classification details.
+
+        :return: list of dicts, each containing article fields plus classification fields
+        """
+        with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                        SELECT a.id
+                        FROM feeds.articles a
+                                 JOIN feeds.article_classification c ON a.id = c.article_id
+                        WHERE c.is_genai_related = TRUE
+                        ORDER BY a.published_at DESC NULLS LAST, a.created_at DESC;
+                        """)
+            rows = cur.fetchall()
+            self.logger.debug("Fetched %d GenAI related articles", len(rows))
+            return [row[0] for row in rows]
 
 def enqueue_article(config: dict, article_id: int, queue_name: str = 'default'):
     """
