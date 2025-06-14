@@ -1,5 +1,6 @@
 import logging
 import sys
+import os
 
 
 class LoggerMixin:
@@ -22,7 +23,9 @@ class LoggerMixin:
                 )
                 handler.setFormatter(formatter)
                 logger.addHandler(handler)
-                logger.setLevel(logging.DEBUG)
+
+                log_level = getattr(logging, os.getenv("LOG_LEVEL", "INFO").upper())
+                logger.setLevel(log_level)
                 logger.propagate = False
 
             self._logger = logger

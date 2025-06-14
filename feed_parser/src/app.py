@@ -1,18 +1,10 @@
-import os
 import time
 from datetime import datetime
 
 from poll_service import PollService
 from common.db import CMSDataBase
 from common.ustils import get_first_existing_value
-
-POSTGRES_CONNECTION = {
-    'host': 'postgres',
-    'port': 5432,
-    'dbname': 'cms',
-    'user': 'cms_user',
-    'password': os.environ['POSTGRES_CMS_USER_PASSWORD'],
-}
+from config import POSTGRES_CONNECTION
 
 
 def main():
@@ -30,7 +22,7 @@ def main():
                 db.update_feed_metadata(
                     feed_id=feed['id'],
                     last_modified=last_modified,
-                    etag=parsed['etag']
+                    etag=parsed.get('etag')
                 )
                 for entry in parsed.entries:
                     published_at_struct = entry.get('published_parsed')
@@ -52,6 +44,7 @@ def main():
                         published_at=published_at,
                         content=content
                     )
+
 
 if __name__ == '__main__':
     main()

@@ -21,7 +21,6 @@ class PollService(LoggerMixin):
             headers['If-Modified-Since'] = feed['last_modified']
 
         parsed = feedparser.parse(feed['url'], request_headers=headers)
-
         if parsed.status == 304:
             self.logger.info('No new entries (304 Not Modified).')
             return None

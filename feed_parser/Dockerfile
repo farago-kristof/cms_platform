@@ -2,6 +2,7 @@ FROM python:3.12-slim
 
 ENV APP_PATH=/app
 
+# Set up service user and group, create venv, set file system permissions
 RUN \
   mkdir -p ${APP_PATH}/src && \
   # Add service user
@@ -19,15 +20,20 @@ RUN \
   chmod 750 ${APP_PATH}/src/.bashrc && \
   chmod 640 ${APP_PATH}/src/.bash_profile
 
+USER service
+
 COPY  --chown=service:service feed_parser/requirements.txt ${APP_PATH}/requirements.txt
 
-RUN   . ${APP_PATH}/service-venv/bin/activate && (cd ${APP_PATH}; python -m pip install --upgrade pip setuptools && python -m pip install -r ${APP_PATH}/requirements.txt)
+# Activate venv and install packages
+RUN . ${APP_PATH}/service-venv/bin/activate && (cd ${APP_PATH}; python -m pip install --upgrade pip setuptools && python -m pip install -r ${APP_PATH}/requirements.txt)
 
 WORKDIR ${APP_PATH}/src
 
-COPY  --chown=service:service feed_parser/src .
-
 COPY  --chown=service:service ./common ./common
+
+COPY  --chown=service:service ./data/config.py ./config.py
+
+COPY  --chown=service:service feed_parser/src .
 
 ENTRYPOINT ["/bin/bash"]
 
