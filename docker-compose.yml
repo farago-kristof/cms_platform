@@ -7,6 +7,20 @@ services:
     networks:
       - queue
 
+  rq-worker:
+    build:
+      context: .
+      dockerfile: redis_worker/Dockerfile
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - queue
+      - db
+    environment:
+      - RQ_REDIS_URL=redis://redis:6379
+      - QUEUE_NAME=articles
+
   feed-parser:
     build:
       context: .

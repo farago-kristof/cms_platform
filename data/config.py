@@ -7,3 +7,10 @@ POSTGRES_CONNECTION = {
     'user': 'cms_user',
     'password': os.environ['POSTGRES_CMS_USER_PASSWORD'],
 }
+
+REDIS_CONNECTION = {
+    'host': 'redis',
+    'port': 6379
+}
+
+QUEUE_NAME = 'articles'

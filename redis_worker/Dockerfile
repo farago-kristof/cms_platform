@@ -22,7 +22,7 @@ RUN \
 
 USER service
 
-COPY  --chown=service:service feed_parser/requirements.txt ${APP_PATH}/requirements.txt
+COPY  --chown=service:service redis_worker/requirements.txt ${APP_PATH}/requirements.txt
 COPY  --chown=service:service common/requirements.txt ${APP_PATH}/requirements.common.txt
 
 # Activate venv and install packages
@@ -34,8 +34,8 @@ COPY  --chown=service:service ./common/*.py ./common/
 
 COPY  --chown=service:service ./data/config.py ./config.py
 
-COPY  --chown=service:service feed_parser/src .
+COPY  --chown=service:service redis_worker/src .
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-c"]
 
-CMD ["-c", ". ${APP_PATH}/service-venv/bin/activate; python3 app.py"]
+CMD [". ${APP_PATH}/service-venv/bin/activate && rq worker ${QUEUE_NAME}"]

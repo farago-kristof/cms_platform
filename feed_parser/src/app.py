@@ -2,9 +2,9 @@ import time
 from datetime import datetime
 
 from poll_service import PollService
-from common.db import CMSDataBase
+from common.db import CMSDataBase, enqueue_article
 from common.ustils import get_first_existing_value
-from config import POSTGRES_CONNECTION
+from config import POSTGRES_CONNECTION, REDIS_CONNECTION
 
 
 def main():
@@ -37,13 +37,14 @@ def main():
                         content = entry['content'][0].get('value')
                     if not content:
                         content = entry.get('summary')
-                    db.insert_article(
+                    inserted_id = db.insert_article(
                         feed_id=feed['id'],
                         title=entry.get('title'),
                         link=entry.get('link'),
                         published_at=published_at,
                         content=content
                     )
+                    enqueue_article(config=REDIS_CONNECTION, article_id=inserted_id, queue_name='articles')
 
 
 if __name__ == '__main__':
