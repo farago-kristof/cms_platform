@@ -49,7 +49,6 @@ services:
     networks:
       - queue
       - db
-#    command: ["-c", "tail -f /dev/null"]
 
   postgres:
     image: postgres:15-alpine
