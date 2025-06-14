@@ -20,6 +20,8 @@ services:
     environment:
       - RQ_REDIS_URL=redis://redis:6379
       - QUEUE_NAME=articles
+    env_file:
+      - .env
 
   feed-parser:
     build:

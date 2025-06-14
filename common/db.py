@@ -1,5 +1,3 @@
-import typing as t
-
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from redis import Redis
@@ -60,6 +58,22 @@ class CMSDataBase(LoggerMixin):
             inserted_id = cur.fetchone()[0]
             self.conn.commit()
             return inserted_id
+
+    def get_article_by_id(self, article_id):
+        """Fetch a single article by its primary key ID
+
+        :param article_id: int, the primary key of the article
+        :return: dict or None, the article record or None if not found
+        """
+
+        with self.conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                        SELECT *
+                        FROM feeds.articles
+                        WHERE id = %s
+                        """, (article_id,))
+            article = cur.fetchone()
+            return article
 
 
 def enqueue_article(config: dict, article_id: int, queue_name: str = 'default'):
