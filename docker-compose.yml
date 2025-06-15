@@ -33,7 +33,18 @@ services:
       - postgres
     networks:
       - db
-      - web
+      - web-net
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    depends_on:
+      - api
+    networks:
+      - web-net
+    ports:
+      - "80:80"
 
   feed-parser:
     build:
@@ -71,7 +82,7 @@ networks:
     driver: bridge
   db:
     driver: bridge
-  web:
+  web-net:
     driver: bridge
 
 volumes:
