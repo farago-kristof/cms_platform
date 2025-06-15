@@ -115,7 +115,7 @@ class CMSDataBase(LoggerMixin):
                         """)
             rows = cur.fetchall()
             self.logger.debug("Fetched %d GenAI related articles", len(rows))
-            return [row[0] for row in rows]
+            return [row['id'] for row in rows]
 
 def enqueue_article(config: dict, article_id: int, queue_name: str = 'default'):
     """
