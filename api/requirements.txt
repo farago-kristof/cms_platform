@@ -1,0 +1,4 @@
+flask
+flask-cors
+gunicorn
+-r requirements.common.txt
