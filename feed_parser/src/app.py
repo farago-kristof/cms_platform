@@ -3,7 +3,7 @@ from datetime import datetime
 
 from poll_service import PollService
 from common.db import CMSDataBase, enqueue_article
-from common.ustils import get_first_existing_value
+from common.utils import get_first_existing_value
 from config import POSTGRES_CONNECTION, REDIS_CONNECTION
 
 

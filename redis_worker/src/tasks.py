@@ -4,6 +4,7 @@ from json import loads
 import google.generativeai as genai
 
 from common.db import CMSDataBase
+from common.utils import retry_with_exponential_backoff
 from config import POSTGRES_CONNECTION
 from templates import gen_ai_classification_template
 
@@ -19,7 +20,11 @@ def classify_article(article_id):
             prompt = gen_ai_classification_template.format(title=title, summary=content)
             genai.configure(api_key=os.environ['GEMINI_API_KEY'])
             model = genai.GenerativeModel(model_name=MODEL)
-            response = model.generate_content(prompt)
+            response = retry_with_exponential_backoff(
+                func=model.generate_content,
+                args=(prompt,),
+                exceptions=(Exception,)
+            )
             raw_text = response.candidates[0].content.parts[0].text
             response_dict = loads(raw_text)
             db.insert_article_classification(
