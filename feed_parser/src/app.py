@@ -45,8 +45,7 @@ def main():
                         content=content
                     )
                     enqueue_article(config=REDIS_CONNECTION, article_id=inserted_id, queue_name='articles')
-                    break
-        break
+
 
 if __name__ == '__main__':
     main()
